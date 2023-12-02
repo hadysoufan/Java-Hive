@@ -57,7 +57,7 @@ The `SignUpActivity` facilitates user registration. It includes image selection 
 
 ## Permissions
 
-Explain the permissions required by your application.
+Permissions required by this application.
 
 - `INTERNET`: Used for network communication.
 - `READ_EXTERNAL_STORAGE`: Needed for reading images from the gallery.
@@ -66,7 +66,7 @@ Explain the permissions required by your application.
 
 ## Manifest
 
-Explain key elements in the AndroidManifest.xml file.
+Elements in the AndroidManifest.xml file.
 
 - `<uses-permission>`: Specifies required permissions.
 - `<application>`: Configures application-wide settings.
