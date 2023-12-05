@@ -61,7 +61,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
         binding.layoutImage.setOnClickListener(v -> {
-            // Check for runtime permission before launching the gallery
             if (checkReadExternalStoragePermission()) {
                 openGallery();
             } else {
@@ -177,27 +176,23 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    // Check if the app has permission to read external storage
     private boolean checkReadExternalStoragePermission() {
         return ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
-    // Request permission to read external storage at runtime
     private void requestReadExternalStoragePermission() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 READ_EXTERNAL_STORAGE_PERMISSION_CODE);
     }
 
-    // Handle the result of the permission request
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == READ_EXTERNAL_STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, open the gallery
                 openGallery();
             } else {
                 showToast("Permission denied. Unable to open the gallery.");
