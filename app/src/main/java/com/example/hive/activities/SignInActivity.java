@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.hive.R;
@@ -45,6 +48,12 @@ public class SignInActivity extends AppCompatActivity {
                 signIn();
             }
         });
+
+        ImageView imagePasswordVisibility = findViewById(R.id.imagePasswordVisibility);
+        imagePasswordVisibility.setOnClickListener(v -> {
+            togglePasswordVisibility();
+        });
+
     }
 
     private void signIn(){
@@ -79,6 +88,26 @@ public class SignInActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.INVISIBLE);
             binding.buttonSignIn.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void togglePasswordVisibility() {
+        EditText passwordEditText = binding.inputPassword;
+        ImageView imagePasswordVisibility = findViewById(R.id.imagePasswordVisibility);
+
+        // Store the current cursor position and selection
+        int selectionStart = passwordEditText.getSelectionStart();
+        int selectionEnd = passwordEditText.getSelectionEnd();
+
+        // Toggle password visibility
+        if (passwordEditText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            imagePasswordVisibility.setImageResource(R.drawable.ic_eye_show);
+        } else {
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imagePasswordVisibility.setImageResource(R.drawable.ic_eye_hide);
+        }
+
+        passwordEditText.setSelection(selectionStart, selectionEnd);
     }
 
     private void showToast(String message){

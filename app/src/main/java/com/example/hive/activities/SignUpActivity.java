@@ -10,9 +10,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -34,6 +38,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+
+import com.example.hive.databinding.ActivitySignUpBinding;
+
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -67,14 +74,24 @@ public class SignUpActivity extends AppCompatActivity {
                 requestReadExternalStoragePermission();
             }
         });
+
+        // Add this code to toggle password visibility
+        ImageView imagePasswordVisibility = findViewById(R.id.imagePasswordVisibility);
+        imagePasswordVisibility.setOnClickListener(v -> {
+            togglePasswordVisibility();
+        });
+
+        ImageView imageConfirmPasswordVisibility = findViewById(R.id.imageConfirmPasswordVisibility);
+        imageConfirmPasswordVisibility.setOnClickListener(v -> {
+            toggleConfirmPasswordVisibility();
+        });
     }
 
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-
-    private void signUp(){
+    private void signUp() {
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
@@ -106,13 +123,13 @@ public class SignUpActivity extends AppCompatActivity {
         pickImage.launch(intent);
     }
 
-    private String encodedImage(Bitmap bitmap){
+    private String encodedImage(Bitmap bitmap) {
         int previewWidth = 150;
         int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
         Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
-        byte [] bytes = byteArrayOutputStream.toByteArray();
+        byte[] bytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
@@ -135,6 +152,42 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
     );
+
+    private void togglePasswordVisibility() {
+        EditText passwordEditText = binding.inputPassword;
+        ImageView imagePasswordVisibility = findViewById(R.id.imagePasswordVisibility);
+
+        int selectionStart = passwordEditText.getSelectionStart();
+        int selectionEnd = passwordEditText.getSelectionEnd();
+
+        if (passwordEditText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            imagePasswordVisibility.setImageResource(R.drawable.ic_eye_show);
+        } else {
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imagePasswordVisibility.setImageResource(R.drawable.ic_eye_hide);
+        }
+
+        passwordEditText.setSelection(selectionStart, selectionEnd);
+    }
+
+    private void toggleConfirmPasswordVisibility() {
+        EditText confirmPasswordEditText = binding.inputConfirmPassword;
+        ImageView imageConfirmPasswordVisibility = findViewById(R.id.imageConfirmPasswordVisibility);
+
+        int selectionStart = confirmPasswordEditText.getSelectionStart();
+        int selectionEnd = confirmPasswordEditText.getSelectionEnd();
+
+        if (confirmPasswordEditText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+            confirmPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            imageConfirmPasswordVisibility.setImageResource(R.drawable.ic_eye_show);
+        } else {
+            confirmPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imageConfirmPasswordVisibility.setImageResource(R.drawable.ic_eye_hide);
+        }
+
+        confirmPasswordEditText.setSelection(selectionStart, selectionEnd);
+    }
 
 
     private Boolean isValidSignUpDetails() {
@@ -164,12 +217,11 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-
-    private void loading(Boolean isLoading){
-        if(isLoading){
+    private void loading(Boolean isLoading) {
+        if (isLoading) {
             binding.buttonSignUp.setVisibility(View.INVISIBLE);
             binding.progressBar.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.progressBar.setVisibility(View.INVISIBLE);
             binding.buttonSignUp.setVisibility(View.VISIBLE);
 
